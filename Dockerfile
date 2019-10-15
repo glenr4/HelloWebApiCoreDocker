@@ -4,10 +4,12 @@
 
 # Run the image 'myapp' with the container name 'test'
 # -dit: detached, interactive, TTY (this will stop of the container from automatically exiting)
-# -p: map ports 6000 and 6001 on the host machine to ports 5000 and 5001 inside the container
-# $ docker run -dit -p 6000:5000 -p 6001:5001 --name test myapp
-# To share source files with the host (need double backslashes for Windows path)
-# $ docker run -dit -p 7002:5000 -v //d//Projects//HelloWebApiCoreDocker//webapi:/app/webapi --name test myapp
+# -i: interactive (use this if there is an ENTRYPOINT in the Dockerfile)
+# -p: map ports 7000 and 7001 on the host machine to ports 5000 and 5001 inside the container
+# -v: mounts a volume, which allows file sharing with the host (need double backslashes for Windows path)
+# $ docker run -i -p 7000:5000 -p 7001:5001 -v //d//Projects//HelloWebApiCoreDocker//webapi:/app/webapi --name test myapp
+# Using this command would be preferable but usually results in an error because it cannot find the project file
+# $ docker run -i -p 7000:5000 -p 7001:5001 -v ${pwd}//webapi:/app/webapi --name test myapp
 
 # To access bash inside the container 'test'
 # $ docker exec -i test bash
@@ -27,15 +29,12 @@
 # To remove all stopped containers
 # $ docker container prune
 
-FROM microsoft/dotnet:2.2-sdk AS build
-WORKDIR /app
+##########################################
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 
-# copy csproj and restore as distinct layers
-# COPY *.sln .
-# COPY ./webapi/*.csproj ./webapi/
-# RUN dotnet restore
-
-# COPY webapi/. ./webapi/
+# Copy project file so that build doesn't fail
+WORKDIR /app/webapi
+COPY ./webapi/*.csproj ./
 
 # Debugging support
 RUN apt-get update
@@ -47,7 +46,4 @@ RUN curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /publish/
 EXPOSE 5000 5001
 
 # Run
-# RUN dotnet build -c debug --no-restore
-ENV DOTNET_USE_POLLING_FILE_WATCHER 1
-WORKDIR /app/webapi
 ENTRYPOINT dotnet watch run --no-restore
