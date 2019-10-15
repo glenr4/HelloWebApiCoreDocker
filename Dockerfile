@@ -1,10 +1,11 @@
-# Create an image called 'myapp' from this file (run from bash with this file in the current directory, which is the dot at the end of the command)
+# Create an image called 'myapp' from this file (run from bash with this file in the current directory, 
+# which is the dot at the end of the command)
 # $ docker build -t myapp .
 
 # Run the image 'myapp' with the container name 'test'
 # -dit: detached, interactive, TTY (this will stop of the container from automatically exiting)
-# -p: map port 8080 on the host machine to 80 inside the container
-# $ docker run -dit -p 5000:80 --name test myapp
+# -p: map ports 6000 and 6001 on the host machine to ports 5000 and 5001 inside the container
+# $ docker run -dit -p 6000:5000 -p 6001:5001 --name test myapp
 
 # To access bash inside the container 'test'
 # $ docker exec -i test bash
@@ -33,7 +34,8 @@ COPY ./webapi/*.csproj ./webapi/
 RUN dotnet restore
 
 COPY webapi/. ./webapi/
+COPY bashscripts/. .
 
-# ports
-EXPOSE 5000 5001 80
+# ports (must match UseUrls in CreateWebHostBuilder)
+EXPOSE 5000 5001
 
