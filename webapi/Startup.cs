@@ -34,7 +34,7 @@ namespace HelloWebApiCoreDocker
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

@@ -1,3 +1,7 @@
+# docker run -i -p 7000:5000 -p 7001:5001 --name test2 original
+
+
+
 FROM microsoft/dotnet:2.2-sdk AS build
 WORKDIR /app
 
@@ -13,8 +17,8 @@ RUN dotnet publish -c Debug -o out
 
 FROM microsoft/dotnet:2.2-aspnetcore-runtime AS runtime
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 80 5000
+EXPOSE 443 5001
 COPY --from=build /app/webapi/out ./
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends apt-utils

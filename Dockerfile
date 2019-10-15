@@ -34,7 +34,12 @@ COPY ./webapi/*.csproj ./webapi/
 RUN dotnet restore
 
 COPY webapi/. ./webapi/
-COPY bashscripts/. .
+
+# Debugging support
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends apt-utils
+RUN apt-get install -y curl unzip procps
+RUN curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /publish/vsdbg;
 
 # ports (must match UseUrls in CreateWebHostBuilder)
 EXPOSE 5000 5001

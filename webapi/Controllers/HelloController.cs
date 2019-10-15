@@ -9,7 +9,7 @@ namespace HelloWebApiCoreDocker.Controllers
         [HttpGet]
         public ActionResult<string> Get()
         {
-            return "Hello Again!";
+            return "What's up!!!!!!!!!";
         }
     }
 }
