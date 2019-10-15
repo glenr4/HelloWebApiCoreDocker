@@ -11,6 +11,9 @@
 # Using this command would be preferable but usually results in an error because it cannot find the project file
 # $ docker run -i -p 7000:5000 -p 7001:5001 -v ${pwd}//webapi:/app/webapi --name test myapp
 
+# To reconnect to container, even if it is still running
+# $ docker start -i test
+
 # To access bash inside the container 'test'
 # $ docker exec -i test bash
 
@@ -32,9 +35,12 @@
 ##########################################
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 
-# Copy project file so that build doesn't fail
+# Copy solution and project files so that build doesn't fail
+WORKDIR /app
+COPY *.sln .
 WORKDIR /app/webapi
 COPY ./webapi/*.csproj ./
+RUN dotnet restore
 
 # Debugging support
 RUN apt-get update
@@ -46,4 +52,5 @@ RUN curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /publish/
 EXPOSE 5000 5001
 
 # Run
-ENTRYPOINT dotnet watch run --no-restore
+ENV DOTNET_USE_POLLING_FILE_WATCHER 1
+ENTRYPOINT dotnet watch run
