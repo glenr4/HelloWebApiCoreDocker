@@ -38,11 +38,11 @@
 ##########################################
 FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build
 
-# Copy solution and project files so that build doesn't fail
+# Copy solution and project files
 WORKDIR /app
 COPY *.sln .
 WORKDIR /app/webapi
-COPY ./webapi/*.csproj ./
+COPY ./webapi/*.csproj .
 RUN dotnet restore
 
 # Debugging support
